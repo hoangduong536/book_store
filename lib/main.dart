@@ -1,9 +1,11 @@
+import 'package:book_store/module/sign_in/sign_in_page.dart';
 import 'package:book_store/shared/app_color.dart';
 import 'package:book_store/shared/identifier.dart';
 import 'package:flutter/material.dart';
 
-import 'module/signin/signin_page.dart';
-import 'module/signup/signup_page.dart';
+
+
+import 'module/sign_up/sign_up_page.dart';
 import 'module/splash/splash.dart';
 
 
