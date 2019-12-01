@@ -23,10 +23,16 @@ class UserRepo {
         SPref.instance.set(SPrefCache.KEY_TOKEN, userData.token);
         c.complete(userData);
       }
-    } on DioError catch(e) {
+    } on DioError catch(e){
+      print("UserRepo Dio Err: " + e.toString());
+      print("UserRepo Dio data Err: " + e.response.data.toString());
       RestError error = RestError.fromJson(e.response.data);
       c.completeError(error);
     }
+//    } on DioError catch(e) {
+//      RestError error = RestError.fromJson(e.response.data);
+//      c.completeError(error);
+//    }
 
     return c.future;
   }

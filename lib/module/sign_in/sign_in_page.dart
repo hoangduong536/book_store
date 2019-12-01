@@ -95,7 +95,7 @@ class __SignInFormWidgetState extends State<_SignInFormWidget> {
       child: TextField(
         controller: _txtPassController,
         cursorColor: Colors.black,
-        obscureText: true,
+
         decoration: InputDecoration(
           icon: Icon(
             Icons.lock,

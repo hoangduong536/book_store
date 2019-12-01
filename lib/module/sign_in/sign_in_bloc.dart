@@ -24,9 +24,10 @@ class SignInBloc extends BaseBloc {
 
   void _handleSignIn(BaseEvent event) {
     SignInEvent signInEvent = event as SignInEvent;
+    print("Phone: ${signInEvent.phone}  ====  Pass: ${signInEvent.pass}");
     _userRepo.signIn(signInEvent.phone, signInEvent.pass).then(
         (userData) {
-          print("_handleSignIn: " + userData.toString());
+          print("_handleSignIn: " + userData.displayName);
           //sign in success
         },
         onError: (error){
