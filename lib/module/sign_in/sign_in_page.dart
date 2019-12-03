@@ -52,8 +52,8 @@ class __SignInFormWidgetState extends State<_SignInFormWidget> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
 
-                  _buildPhoneField(),
-                  _buildPassField(),
+                  _buildPhoneField(bloc),
+                  _buildPassField(bloc),
                   _buildSignInButton(bloc),
                   _buildFooter(context),
                 ],
@@ -66,60 +66,94 @@ class __SignInFormWidgetState extends State<_SignInFormWidget> {
   }
 
 
-  Widget _buildPhoneField() {
-    return Container(
+  Widget _buildPhoneField(SignInBloc bloc) {
+    return StreamProvider<String>.value(
+      initialData: null,
+      value: bloc.phoneStream,
+      child: Consumer<String>(
+        builder: (context,msg,child) =>
+        Container(
 
-      margin: EdgeInsets.only(bottom: 15),
-      child: TextField(
-        controller: _txtPhoneController,
-        cursorColor: Colors.black,
-        keyboardType: TextInputType.phone,
-        decoration: InputDecoration(
-          icon: Icon(
-            Icons.phone,
-            color: AppColor.blue,
+          margin: EdgeInsets.only(bottom: 15),
+          child: TextField(
+            controller: _txtPhoneController,
+            onChanged: (text){
+              print("_buildPhoneField: " + text + " ====================" + msg.toString()) ;
+              bloc.phoneSink.add(text);
+
+            } ,
+            cursorColor: Colors.black,
+
+            decoration: InputDecoration(
+              icon: Icon(
+                Icons.phone,
+                color: AppColor.blue,
+              ),
+              hintText: '(+84) 973 901 789',
+              errorText: msg,
+              labelText: 'Phone',
+              labelStyle: TextStyle(color: AppColor.blue),
+            ),
           ),
-          hintText: '(+84) 973 901 789',
-          labelText: 'Phone',
-          labelStyle: TextStyle(color: AppColor.blue),
+
         ),
       ),
-
     );
   }
 
-  Widget _buildPassField() {
-    return Container(
+  Widget _buildPassField(SignInBloc bloc) {
+    return StreamProvider<String>.value(
+      initialData: null,
+      value: bloc.passStream,
+      child: Consumer<String>(
+        builder: (context,msg,child) =>
+        Container(
 
-      margin: EdgeInsets.only(bottom: 25),
-      child: TextField(
-        controller: _txtPassController,
-        cursorColor: Colors.black,
+          margin: EdgeInsets.only(bottom: 25),
+          child: TextField(
+            controller: _txtPassController,
+            onChanged: (text){
+              print("_buildPassField: " + text + " ====================" + msg.toString()) ;
+              bloc.passSink.add(text);
+            },
+            cursorColor: Colors.black,
 
-        decoration: InputDecoration(
-          icon: Icon(
-            Icons.lock,
-            color: AppColor.blue,
+            decoration: InputDecoration(
+              icon: Icon(
+                Icons.lock,
+                color: AppColor.blue,
+              ),
+              hintText: 'Password',
+              errorText: msg,
+              labelText: 'Password',
+              labelStyle: TextStyle(color: AppColor.blue),
+            ),
           ),
-          hintText: 'Password',
-          labelText: 'Password',
-          labelStyle: TextStyle(color: AppColor.blue),
+
         ),
       ),
-
     );
   }
 
   Widget _buildSignInButton(SignInBloc bloc) {
-    return Container(
-      child: NormalButton(
-        title: "Sign In",
-        onPressed: () {
-          bloc.event.add( SignInEvent(phone: _txtPhoneController.text,pass: _txtPassController.text));
+    return StreamProvider<bool>.value(
+      initialData: false,
+      value: bloc.btnStream,
+      child: Consumer<bool>(
+        builder: (context,enable,child)=>
+         Container(
+          child: NormalButton(
+            title: "Sign In",
+            onPressed: enable ? () {
+              print("_buildSignInButton onPressed: ==============="  );
+              bloc.event.add( SignInEvent(phone: _txtPhoneController.text,pass: _txtPassController.text));
 
-        },
+            }
+            : null,
+          ),
+
+        ),
       ),
-
     );
   }
 

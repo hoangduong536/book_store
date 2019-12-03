@@ -29,10 +29,6 @@ class UserRepo {
       RestError error = RestError.fromJson(e.response.data);
       c.completeError(error);
     }
-//    } on DioError catch(e) {
-//      RestError error = RestError.fromJson(e.response.data);
-//      c.completeError(error);
-//    }
 
     return c.future;
   }
@@ -47,6 +43,7 @@ class UserRepo {
         c.complete(userData);
       }
     } on DioError catch(e) {
+      print("UserRepo Sign Up Dio Err: " + e.toString());
       RestError error = RestError.fromJson(e.response.data);
       c.completeError(error);
     }

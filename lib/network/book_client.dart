@@ -1,13 +1,14 @@
 
 
 
+import 'package:book_store/shared/api_method_name.dart';
 import 'package:dio/dio.dart';
 import 'package:book_store/data/spref/spref.dart';
 import 'package:book_store/shared/constant.dart';
 
 class BookClient {
   static BaseOptions _options = new BaseOptions(
-    baseUrl: "http://192.168.1.5:8000",
+    baseUrl:APIMethodName.BASE_URL,
     connectTimeout: 5000,
     receiveTimeout: 3000,
 
