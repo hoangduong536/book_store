@@ -24,7 +24,7 @@ class _CartWidgetState extends State<CartWidget> {
 //    bloc.getShoppingCartInfo();
   }
 
-  @override
+//  @override
 //  Widget build(BuildContext context) {
 //    return Consumer<HomeBloc>(
 //      builder: (context, bloc, child) => StreamProvider<dynamic>.value(
@@ -71,50 +71,20 @@ class _CartWidgetState extends State<CartWidget> {
 //    );
 //  }
 
-
+  @override
   Widget build(BuildContext context) {
-    return Consumer<HomeBloc>(
-      builder: (context, bloc, child) => StreamProvider<dynamic>.value(
-        value: bloc.shoppingCartStream,
-        initialData: null,
-        catchError: (context, error) {
-          return error;
-        },
-        child: Consumer<dynamic>(
-          builder: (context, data, child) {
-            if (data == null || data is RestError) {
-              return Container(
-                margin: EdgeInsets.only(top: 15, right: 20),
-                child: Icon(Icons.shopping_cart),
-              );
-            }
-
-            var cart = data as ShoppingCart;
-            return GestureDetector(
-              onTap: () {
-                if (data == null) {
-                  return;
-                }
-                Navigator.pushNamed(context, Identifier.CHECK_OUT_PAGE,
-                    arguments: cart.orderId);
-              },
-              child: Container(
-                margin: EdgeInsets.only(top: 15, right: 20),
-                child: Badge(
-                  badgeContent: Text(
-                    '${cart.total}',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  child: Icon(Icons.shopping_cart),
-                ),
-              ),
-            );
-          },
+    return Container(
+      margin: EdgeInsets.only(top: 15, right: 20),
+      child: Badge(
+        badgeContent: Text(
+          '0',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        child: Icon(Icons.shopping_cart),
       ),
-    );//end  Consumer HomeBloc
+    );
   }
 }

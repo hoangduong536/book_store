@@ -17,6 +17,7 @@ import 'package:book_store/shared/widget/normal_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
 class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -37,13 +38,45 @@ class SignInPage extends StatelessWidget {
 class _SignInFormWidget extends StatefulWidget {
 
   @override
-  __SignInFormWidgetState createState() => __SignInFormWidgetState();
+  __SignInFormWidgetState createState() {
+    print("SignInPage - StatefulWidget - CreateState ======================");
+    return __SignInFormWidgetState();
+  }
 }
 
 class __SignInFormWidgetState extends State<_SignInFormWidget> {
 
   final TextEditingController _txtPhoneController = TextEditingController();
   final TextEditingController _txtPassController = TextEditingController();
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("SignInPage - StatefulWidget - InitState ======================");
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("SignInPage - StatefulWidget - DidChangeDependencies ======================");
+
+  }
+
+  @override
+  void didUpdateWidget(_SignInFormWidget oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    print("SignInPage - StatefulWidget - DidUpdateWidget ======================");
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    print("SignInPage - StatefulWidget - Dispose ======================");
+  }
 
 
   handleEvent(BaseEvent event)
@@ -72,6 +105,7 @@ class __SignInFormWidgetState extends State<_SignInFormWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print("SignInPage - StatefulWidget - build ================");
     return Provider<SignInBloc>.value(
       value: SignInBloc(userRepo: Provider.of(context)),
       child: Consumer<SignInBloc>(

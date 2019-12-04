@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 
 
+import 'module/home/home_page.dart';
 import 'module/sign_up/sign_up_page.dart';
 import 'module/splash/splash.dart';
 
@@ -22,8 +23,8 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
-        '/': (context) => SplashPage(),
-        Identifier.HOME_PAGE: (context) => SignInPage(),
+        '/': (context) => HomePage(),
+        Identifier.HOME_PAGE: (context) => HomePage(),
         Identifier.SIGN_IN_PAGE: (context) => SignInPage(),
         Identifier.SIGN_UP_PAGE: (context) => SignUpPage(),
       },

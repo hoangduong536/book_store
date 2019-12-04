@@ -15,7 +15,7 @@ class LoadingTask extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("LoadingTask build ===========");
+    print("LoadingTask StatelessWidget build ===========");
 
     return StreamProvider<bool>.value(
 

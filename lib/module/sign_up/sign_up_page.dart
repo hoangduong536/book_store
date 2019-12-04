@@ -38,8 +38,39 @@ class __SignUpFormWidgetState extends State<_SignUpFormWidget> {
   final TextEditingController _txtPhoneController = TextEditingController();
   final TextEditingController _txtPassController = TextEditingController();
 
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("SignUpPage - StatefulWidget - InitState ======================");
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("SignUpPage - StatefulWidget - DidChangeDependencies ======================");
+
+  }
+
+  @override
+  void didUpdateWidget(_SignUpFormWidget oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    print("SignUpPage - StatefulWidget - DidUpdateWidget ======================");
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    print("SignUpPage - StatefulWidget - Dispose ======================");
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    print("SignUpPage - StatefulWidget - build ======================");
     return Provider<SignUpBloc>.value(
         value: SignUpBloc(userRepo: Provider.of(context)),
         child: Consumer<SignUpBloc>(
