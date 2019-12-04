@@ -16,23 +16,31 @@ class BlocListener<T extends BaseBloc> extends StatefulWidget {
 
   @override
   _BlocListenerState createState() => _BlocListenerState<T>();
+
 }
 
 class _BlocListenerState<T> extends State<BlocListener> {
+
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    print("BlocListener - didChangeDependencies ======================");
+
 
     var bloc = Provider.of<T>(context) as BaseBloc;
     bloc.processEventStream.listen(
           (event) {
+        print("BlocListener - didChangeDependencies processEventStream.listen ======================");
         widget.listener(event);
+
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    print("BlocListener - build ======================");
     return StreamProvider<BaseEvent>.value(
       value: (Provider.of<T>(context) as BaseBloc).processEventStream,
       initialData: null,
@@ -41,6 +49,7 @@ class _BlocListenerState<T> extends State<BlocListener> {
       },
       child: Consumer<BaseEvent>(
         builder: (context, event, child) {
+
           return Container(
             child: widget.child,
           );

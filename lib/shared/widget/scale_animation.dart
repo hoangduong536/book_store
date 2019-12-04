@@ -28,6 +28,7 @@ class _ScaleAnimationState extends State<ScaleAnimation>
     animation = CurvedAnimation(
       parent: animationController,
       curve: Curves.easeInOut,
+
     );
 
     animationController.forward();

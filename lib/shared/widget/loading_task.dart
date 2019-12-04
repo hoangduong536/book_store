@@ -15,13 +15,17 @@ class LoadingTask extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("LoadingTask build ===========");
+
     return StreamProvider<bool>.value(
+
       value: bloc.loadingStream,
       initialData: false,
       child: Stack(
         children: <Widget>[
           child,
           Consumer<bool>(
+
             builder: (context, isLoading, child) => Center(
               child: isLoading
                   ? ScaleAnimation(

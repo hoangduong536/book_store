@@ -114,6 +114,9 @@ class SignUpBloc extends BaseBloc {
         },
         onError: (error){
           ////sign in fail
+
+          btnSink.add(true);
+          loadingSink.add(false);
           print("_handleSignUp error: " + error.toString());
           processEventSink.add(SignUpFailEvent(error.toString()));
 
@@ -121,8 +124,7 @@ class SignUpBloc extends BaseBloc {
 
     );
 
-    btnSink.add(false);
-    loadingSink.add(true);
+
 
   }
 

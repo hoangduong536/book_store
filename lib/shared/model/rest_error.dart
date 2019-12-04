@@ -9,4 +9,10 @@ class RestError {
   factory RestError.fromJson(Map<String, dynamic> json) {
     return RestError(statusCode: json['code'], message: json['message']);
   }
+
+  factory RestError.fromData(String msg) {
+    return RestError(
+      message: msg,
+    );
+  }
 }

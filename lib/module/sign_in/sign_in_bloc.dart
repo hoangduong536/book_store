@@ -91,22 +91,33 @@ class SignInBloc extends BaseBloc {
 
     btnSink.add(false); // Khi bắt đầu call API thì disable nút sign-in
     loadingSink.add(true);//Show Loading
-    _userRepo.signIn(signInEvent.phone, signInEvent.pass).then(
-        (userData) {
-          //sign in success
-          print("_handleSignIn: " + userData.displayName);
-          processEventSink.add(SignInSuccessEvent(userData));
 
-        },
-        onError: (error){
-          ////sign in fail
-          print("_handleSignIn error: " + error.toString());
-          processEventSink.add(SignInFailEvent(error.toString()));
 
-        }
-    );
-    btnSink.add(false);
-    loadingSink.add(true);
+    Future.delayed(Duration(seconds: 6), () {
+      _userRepo.signIn(signInEvent.phone, signInEvent.pass).then(
+              (userData) {
+            //sign in success
+
+            btnSink.add(false);
+            loadingSink.add(true);
+            print("_handleSignIn: " + userData.displayName);
+            processEventSink.add(SignInSuccessEvent(userData));
+
+          },
+          onError: (error){
+            ////sign in fail
+            print("_handleSignIn error: " + error.toString());
+            processEventSink.add(SignInFailEvent(error.toString()));
+
+            btnSink.add(false);
+            loadingSink.add(true);
+
+          }
+      );
+
+    });
+
+
 
   }
 
