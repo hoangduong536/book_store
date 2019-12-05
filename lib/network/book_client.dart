@@ -16,11 +16,13 @@ class BookClient {
   static Dio _dio = Dio(_options);
 
   BookClient._internal() {
-   // _dio.interceptors.add(LogInterceptor(responseBody: true));
+    _dio.interceptors.add(LogInterceptor(responseBody: true));
     _dio.interceptors
         .add(InterceptorsWrapper(onRequest: (Options myOption) async {
       var token = await SPref.instance.get(SPrefCache.KEY_TOKEN);
+
       if (token != null) {
+        print("BookClient - Toeken:" + token);
         myOption.headers["Authorization"] = "Bearer " + token;
       }
 

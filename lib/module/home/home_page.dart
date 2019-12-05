@@ -1,8 +1,21 @@
+import 'package:badges/badges.dart';
 import 'package:book_store/base/base_widget.dart';
+import 'package:book_store/data/remote/order_service.dart';
+import 'package:book_store/data/remote/product_service.dart';
+import 'package:book_store/data/repo/order_repo.dart';
+import 'package:book_store/data/repo/product_repo.dart';
+import 'package:book_store/event/home/add_to_cart_event.dart';
 import 'package:book_store/shared/app_color.dart';
+import 'package:book_store/shared/identifier.dart';
+import 'package:book_store/shared/model/product.dart';
+import 'package:book_store/shared/model/rest_error.dart';
+import 'package:book_store/shared/model/shopping_cart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'card_widget.dart';
+import 'home_bloc.dart';
 
 
 class HomePage extends StatelessWidget {
@@ -10,16 +23,115 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PageContainer(
       title: 'Home Page',
-      di: [],
+      di: [
+        Provider.value(value: ProductService()),
+        Provider.value(value: OrderService()),
+
+        ProxyProvider<ProductService,ProductRepo>(
+          builder: (context,productService,previous)
+          => ProductRepo(productService: productService),
+        ),
+
+        ProxyProvider<OrderService,OrderRepo>(
+          builder: (context,orderService,previous)
+          => OrderRepo(orderService: orderService),
+        ),
+      ],
       bloc: [],
       actions: <Widget>[
-        CartWidget(),
+        ShoppingCartWidget(),
       ],
 
       child: ProductListWidget(),
     );
   }
 }
+
+
+class ShoppingCartWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Provider<HomeBloc>.value(
+      value:  HomeBloc.getInstance(productRepo: Provider.of(context),
+          orderRepo: Provider.of(context)),
+      child: CartWidget(),
+    );
+  }
+}
+
+class CartWidget extends StatefulWidget {
+  @override
+  _CartWidgetState createState() => _CartWidgetState();
+}
+
+class _CartWidgetState extends State<CartWidget> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    var bloc = Provider.of<HomeBloc>(context);
+    bloc.getShoppingCartInfo();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<HomeBloc>(
+      builder: (context,bloc,child)
+      => StreamProvider<dynamic>.value(
+        value: bloc.shoppingCartStream,
+        initialData: null,
+        catchError: (context,err) {
+          return err;
+        },
+        child: Consumer<dynamic>(
+
+          builder: (context,data,child) {
+
+          if(data == null || data is RestError) {
+            return Container(
+              margin: EdgeInsets.only(top: 15,right: 20),
+              child: Icon(Icons.shopping_cart),
+            );
+          }
+          var cart = data as ShoppingCart;
+          return GestureDetector(
+            onTap: (){
+              if(data == null) {
+                return;
+              }
+              Navigator.pushNamed(context, Identifier.CHECK_OUT_PAGE,
+                    arguments: cart.orderId);
+              print("Badge Tap...");
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 15, right: 20),
+              child: Badge(
+                badgeContent: Text(
+                  '${cart.total}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                child: Icon(Icons.shopping_cart),
+              ),
+            ),
+          );}
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
 
 class ProductListWidget extends StatefulWidget {
   @override
@@ -40,15 +152,61 @@ class _ProductListWidgetState extends State<ProductListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView.builder(
-          itemCount: images.length,
-          itemBuilder: (context,index) => _buildRow(images[index],index) ,
-      )
+    return Provider<HomeBloc>.value(
+      value: HomeBloc.getInstance(productRepo: Provider.of(context),
+          orderRepo: Provider.of(context)),
+      child: Consumer<HomeBloc>(
+        builder: (context,bloc,child)
+        => Container(
+          child: StreamProvider<dynamic>.value(
+            value: bloc.getProductList(),
+            initialData: null,
+
+            catchError: (context,err) {
+              return err;
+            },
+
+            child: Consumer<dynamic>(
+              builder: (context,data,child) {
+              if (data == null) {
+
+                return Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: AppColor.yellow,
+                  ),
+                );
+
+              }
+
+              if(data is RestError) {
+                return Center(
+                  child: Container(
+                    child: Text(
+                      data.message,style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                );
+              }
+
+              data = data as List<Product>;
+                return ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (context,index) => _buildRow(data[index],bloc)
+                );
+              }
+
+
+
+
+
+            ),
+          )
+        ),
+      ),
     );
   }
 
-  Widget _buildRow(String imageUrl,int index) {
+  Widget _buildRow(Product product,HomeBloc bloc) {
     var size = MediaQuery.of(context).size;
     return Container(
       height: 180,
@@ -65,7 +223,7 @@ class _ProductListWidgetState extends State<ProductListWidget> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(
-                  imageUrl,
+                  product.productImage,
                   height: 150,
                   width: 150,
                   fit: BoxFit.scaleDown,
@@ -83,7 +241,7 @@ class _ProductListWidgetState extends State<ProductListWidget> {
                     Container(
                       margin:EdgeInsets.only(top: 15,left: 15),
                       child: Text(
-                        'Học tiếng anh cùng Pokemon',
+                        product.productName,
                         style: TextStyle(fontSize: 22,color: Colors.black),
                       ),
                     ),
@@ -92,7 +250,7 @@ class _ProductListWidgetState extends State<ProductListWidget> {
                     Container(
                       margin:EdgeInsets.only(top: 5,left: 15),
                       child: Text(
-                        '30 cuốn',
+                        '${product.quantity}',
                         style: TextStyle(fontSize: 17,color: Colors.blue),
                       ),
                     ),
@@ -108,7 +266,10 @@ class _ProductListWidgetState extends State<ProductListWidget> {
 
                             margin:EdgeInsets.only(top: 5,left: 15),
                             child: Text(
-                              '100.000 vnd',
+                                '${FlutterMoneyFormatter(settings: MoneyFormatterSettings(
+                                  symbol: 'vnđ',
+                                  fractionDigits: 0,
+                                ), amount: product.price).output.symbolOnRight}',
                               style: TextStyle(fontSize: 17,color: Colors.red,fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -129,7 +290,8 @@ class _ProductListWidgetState extends State<ProductListWidget> {
                                 )
                               ),
                               onPressed: () {
-                                print("By now...." + index.toString());
+                                bloc.event.add(AddToCartEvent(product));
+
                               },
                               child: Text(
                                 'Mua ngay',

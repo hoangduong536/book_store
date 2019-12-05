@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
-        '/': (context) => HomePage(),
+        '/': (context) => SplashPage(),
         Identifier.HOME_PAGE: (context) => HomePage(),
         Identifier.SIGN_IN_PAGE: (context) => SignInPage(),
         Identifier.SIGN_UP_PAGE: (context) => SignUpPage(),

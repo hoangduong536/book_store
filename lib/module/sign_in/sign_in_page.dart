@@ -7,6 +7,7 @@ import 'package:book_store/event/sign_in/sign_in_fail_event.dart';
 import 'package:book_store/event/sign_in/sign_in_sucess_event.dart';
 import 'package:book_store/event/sign_up/sign_up_fail_event.dart';
 import 'package:book_store/event/sign_up/sign_up_sucess_event.dart';
+import 'package:book_store/module/home/home_page.dart';
 import 'package:book_store/module/sign_in/sign_in_bloc.dart';
 import 'package:book_store/shared/app_color.dart';
 import 'package:book_store/shared/identifier.dart';
@@ -82,13 +83,14 @@ class __SignInFormWidgetState extends State<_SignInFormWidget> {
   handleEvent(BaseEvent event)
   {
     if (event is SignInSuccessEvent) {
-//      Navigator.pushAndRemoveUntil(
-//        context,
-//        MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-//        ModalRoute.withName('/home'),
-//      );
       print("SignInPage - handleEvent - SignUpSuccessEvent ================");
-      Navigator.pushNamed(context, Identifier.SIGN_UP_PAGE);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+        ModalRoute.withName(Identifier.HOME_PAGE),
+      );
+
+//      Navigator.pushNamed(context, Identifier.SIGN_UP_PAGE);
       return;
     }
 

@@ -4,9 +4,11 @@ import 'dart:async';
 import 'package:book_store/data/repo/user_repo.dart';
 import 'package:book_store/base/base_bloc.dart';
 import 'package:book_store/base/base_event.dart';
+import 'package:book_store/data/spref/spref.dart';
 import 'package:book_store/event/sign_in/sign_in_event.dart';
 import 'package:book_store/event/sign_in/sign_in_fail_event.dart';
 import 'package:book_store/event/sign_in/sign_in_sucess_event.dart';
+import 'package:book_store/shared/constant.dart';
 import 'package:book_store/shared/validation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rxdart/rxdart.dart';
@@ -93,29 +95,36 @@ class SignInBloc extends BaseBloc {
     loadingSink.add(true);//Show Loading
 
 
-    Future.delayed(Duration(seconds: 6), () {
-      _userRepo.signIn(signInEvent.phone, signInEvent.pass).then(
-              (userData) {
-            //sign in success
 
-            btnSink.add(false);
-            loadingSink.add(true);
-            print("_handleSignIn: " + userData.displayName);
-            processEventSink.add(SignInSuccessEvent(userData));
+    _userRepo.signIn(signInEvent.phone, signInEvent.pass).then(
+            (userData) async {
+          //sign in success
 
-          },
-          onError: (error){
-            ////sign in fail
-            print("_handleSignIn error: " + error.toString());
-            processEventSink.add(SignInFailEvent(error.toString()));
+          btnSink.add(true);
+          loadingSink.add(false);
+          print("_handleSignIn: " + userData.displayName + " = " + userData.token);
 
-            btnSink.add(false);
-            loadingSink.add(true);
+          await SPref.instance.set(SPrefCache.KEY_TOKEN,userData.token);
 
-          }
-      );
+          processEventSink.add(SignInSuccessEvent(userData));
 
-    });
+
+        },
+        onError: (error){
+          ////sign in fail
+          print("_handleSignIn error: " + error.toString());
+          processEventSink.add(SignInFailEvent(error.toString()));
+
+          btnSink.add(true);
+          loadingSink.add(false);
+
+        }
+    );
+
+//    Future.delayed(Duration(seconds: 2), () {
+//
+//
+//    });
 
 
 
