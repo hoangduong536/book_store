@@ -109,7 +109,7 @@ class SignUpBloc extends BaseBloc {
     _userRepo.signUp(signUpEvent.displayName,signUpEvent.phone, signUpEvent.pass).then(
             (userData) {
           //sign in success
-              print("_handleSignUp: " + userData.displayName);
+              print("_handleSignUp: " + userData.token);
               processEventSink.add(SignUpSuccessEvent(userData));
         },
         onError: (error){

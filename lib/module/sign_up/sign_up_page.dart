@@ -1,10 +1,17 @@
+import 'package:book_store/base/base_event.dart';
 import 'package:book_store/base/base_widget.dart';
 import 'package:book_store/data/remote/user_service.dart';
 import 'package:book_store/data/repo/user_repo.dart';
 import 'package:book_store/event/sign_up/sign_up_event.dart';
+import 'package:book_store/event/sign_up/sign_up_fail_event.dart';
+import 'package:book_store/event/sign_up/sign_up_sucess_event.dart';
+import 'package:book_store/module/home/home_page.dart';
 import 'package:book_store/module/sign_up/sign_up_bloc.dart';
 import 'package:book_store/shared/app_color.dart';
+import 'package:book_store/shared/identifier.dart';
 import 'package:book_store/shared/style/txt_style.dart';
+import 'package:book_store/shared/widget/bloc_listener.dart';
+import 'package:book_store/shared/widget/loading_task.dart';
 import 'package:book_store/shared/widget/normal_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -68,32 +75,57 @@ class __SignUpFormWidgetState extends State<_SignUpFormWidget> {
   }
 
 
+  handleEvent(BaseEvent event) {
+    if (event is SignUpSuccessEvent) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+        ModalRoute.withName(Identifier.HOME_PAGE),
+      );
+      return;
+    }
+
+    if (event is SignUpFailEvent) {
+      final snackBar = SnackBar(
+        content: Text(event.errMessage),
+        backgroundColor: Colors.red,
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  @override
+
+
   @override
   Widget build(BuildContext context) {
     print("SignUpPage - StatefulWidget - build ======================");
     return Provider<SignUpBloc>.value(
-        value: SignUpBloc(userRepo: Provider.of(context)),
-        child: Consumer<SignUpBloc>(
-          builder: (context,bloc,child) =>
-              Container(
-
-                padding: EdgeInsets.all(25),
-                child: Center(
+      value: SignUpBloc(userRepo: Provider.of(context)),
+      child: Consumer<SignUpBloc>(
+        builder: (context, bloc, child) => BlocListener<SignUpBloc>(
+          listener: handleEvent,
+          child: LoadingTask(
+            bloc: bloc,
+            child: Container(
+              padding: EdgeInsets.all(25),
+              child: Center(
+                child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-
                       _buildDisplayNameField(bloc),
                       _buildPhoneField(bloc),
                       _buildPassField(bloc),
                       _buildSignUpButton(bloc),
-
                     ],
                   ),
                 ),
-
               ),
-        )
+            ),
+          ),
+        ),
+      ),
     );
   }
 

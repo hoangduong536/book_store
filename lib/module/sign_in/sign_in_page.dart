@@ -76,6 +76,8 @@ class __SignInFormWidgetState extends State<_SignInFormWidget> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    var bloc = Provider.of<SignInBloc>(context);
+    bloc.dispose();
     print("SignInPage - StatefulWidget - Dispose ======================");
   }
 

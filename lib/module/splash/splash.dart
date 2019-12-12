@@ -25,9 +25,10 @@ class _SplashPageState extends State<SplashPage> {
         Duration(seconds: 3),
         () async {
           var token = await SPref.instance.get(SPrefCache.KEY_TOKEN);
-          print("SplashPage - _startApp toeken:" + token);
+          print("SplashPage - _startApp toeken:");
           if(token != null) {
             // Go to home page
+            print("SplashPage - _startApp toeken2: " + token);
             Navigator.pushReplacementNamed(context, Identifier.HOME_PAGE);
             return;
           }

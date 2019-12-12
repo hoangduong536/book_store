@@ -49,11 +49,14 @@ class OrderRepo {
         var order = Order.fromJson(response.data['data']);
         c.complete(order);
       } else {
+        print("OrderRepo getOrderDetail - 1 =================");
         c.completeError(RestError.fromData('Không lấy được đơn hàng'));
       }
     } on DioError {
+      print("OrderRepo getOrderDetail - 2 =================");
       c.completeError(RestError.fromData('Không lấy được đơn hàng'));
     } catch (e) {
+      print("OrderRepo getOrderDetail - 3  =================" + e.toString());
       c.completeError(RestError.fromData(e.toString()));
     }
     return c.future;

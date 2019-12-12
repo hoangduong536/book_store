@@ -26,7 +26,8 @@ class UserRepo {
     } on DioError catch(e){
       print("UserRepo Dio Err: " + e.toString());
       print("UserRepo Dio data Err: " + e.response.data.toString());
-      RestError error = RestError.fromJson(e.response.data);
+//      RestError error = RestError.fromJson(e.response.data);
+      RestError error = RestError.fromData("Đăng nhập thất bại");
       c.completeError(error);
     }
 

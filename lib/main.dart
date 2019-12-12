@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 
 
+import 'module/check_out/check_out_page.dart';
 import 'module/home/home_page.dart';
 import 'module/sign_up/sign_up_page.dart';
 import 'module/splash/splash.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         Identifier.HOME_PAGE: (context) => HomePage(),
         Identifier.SIGN_IN_PAGE: (context) => SignInPage(),
         Identifier.SIGN_UP_PAGE: (context) => SignUpPage(),
+        Identifier.CHECK_OUT_PAGE: (context) => CheckoutPage(),
       },
     );
   }

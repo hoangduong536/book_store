@@ -52,19 +52,24 @@ class HomeBloc extends BaseBloc {
   }
 
   _handleAddToCart(event){
+    print("HomeBloc  - _handleAddToCart ====================");
     AddToCartEvent addToCartEvent = event as AddToCartEvent;
     _orderRepo.addToCart(addToCartEvent.product).then((shoppingCart){
+      print("HomeBloc  - _handleAddToCart - Success ====================");
       _shoppingCart.orderId = shoppingCart.orderId;
       shoppingCartSink.add(shoppingCart);
     });
   }
 
   getShoppingCartInfo() {
+    print("HomeBloc  - getShoppingCartInfo ====================");
     Stream<ShoppingCart>.fromFuture(_orderRepo.getShoppingCartInfo()).listen(
             (shoppingCart) {
+              print("HomeBloc  - getShoppingCartInfo - Success ====================");
           _shoppingCart = shoppingCart;
           shoppingCartSink.add(shoppingCart);
         }, onError: (err) {
+      print("HomeBloc  - getShoppingCartInfo - Fail ====================");
       _shoppingCardSubject.addError(err);
     });
   }

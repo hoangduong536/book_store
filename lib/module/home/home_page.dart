@@ -5,6 +5,7 @@ import 'package:book_store/data/remote/product_service.dart';
 import 'package:book_store/data/repo/order_repo.dart';
 import 'package:book_store/data/repo/product_repo.dart';
 import 'package:book_store/event/home/add_to_cart_event.dart';
+import 'package:book_store/module/sign_in/sign_in_page.dart';
 import 'package:book_store/shared/app_color.dart';
 import 'package:book_store/shared/identifier.dart';
 import 'package:book_store/shared/model/product.dart';
@@ -39,6 +40,7 @@ class HomePage extends StatelessWidget {
       ],
       bloc: [],
       actions: <Widget>[
+        Logout(),
         ShoppingCartWidget(),
       ],
 
@@ -46,6 +48,33 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
+
+class Logout extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (){
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) => SignInPage()),
+          ModalRoute.withName(Identifier.SIGN_IN_PAGE),
+        );
+
+        print("Log out Tap...");
+      },
+      child: Container(
+
+        margin:EdgeInsets.only(right: 15),
+        child: Icon(
+          Icons.exit_to_app
+        ),
+      ),
+    );
+  }
+}
+
 
 
 class ShoppingCartWidget extends StatelessWidget {
@@ -74,12 +103,24 @@ class _CartWidgetState extends State<CartWidget> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
+    print("HomePage - CartWidget - didChangeDependencies ====================");
+
     var bloc = Provider.of<HomeBloc>(context);
     bloc.getShoppingCartInfo();
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    print("HomePage - CartWidget - dispose ====================");
+    var bloc = Provider.of<HomeBloc>(context);
+    bloc.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print("HomePage - CartWidget - build ====================");
     return Consumer<HomeBloc>(
       builder: (context,bloc,child)
       => StreamProvider<dynamic>.value(
@@ -133,12 +174,12 @@ class _CartWidgetState extends State<CartWidget> {
 
 
 
-class ProductListWidget extends StatefulWidget {
-  @override
-  _ProductListWidgetState createState() => _ProductListWidgetState();
-}
+//class ProductListWidget extends StatefulWidget {
+//  @override
+//  _ProductListWidgetState createState() => _ProductListWidgetState();
+//}
 
-class _ProductListWidgetState extends State<ProductListWidget> {
+class ProductListWidget extends StatelessWidget {
 
   final images = [
     'https://cdn0.fahasa.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/p/o/pokemon_cuoc-phieu-luu-cua-pippi_tap-4.jpg',
@@ -152,6 +193,7 @@ class _ProductListWidgetState extends State<ProductListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print("HomePage - ProductListWidget - build ====================");
     return Provider<HomeBloc>.value(
       value: HomeBloc.getInstance(productRepo: Provider.of(context),
           orderRepo: Provider.of(context)),
@@ -207,7 +249,7 @@ class _ProductListWidgetState extends State<ProductListWidget> {
   }
 
   Widget _buildRow(Product product,HomeBloc bloc) {
-    var size = MediaQuery.of(context).size;
+   // var size = MediaQuery.of(context).size;
     return Container(
       height: 180,
 
@@ -218,7 +260,7 @@ class _ProductListWidgetState extends State<ProductListWidget> {
           padding: EdgeInsets.only(left: 15),
 
           child: Row(
-
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
@@ -241,7 +283,10 @@ class _ProductListWidgetState extends State<ProductListWidget> {
                     Container(
                       margin:EdgeInsets.only(top: 15,left: 15),
                       child: Text(
+
                         product.productName,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 22,color: Colors.black),
                       ),
                     ),
